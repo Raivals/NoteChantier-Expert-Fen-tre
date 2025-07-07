@@ -12,6 +12,7 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
   const [formData, setFormData] = useState<ChantierFormData>({
     id: editingChantier?.id || crypto.randomUUID(),
     reference: editingChantier?.reference || '',
+    adresse: editingChantier?.adresse || '',
     typeConstruction: editingChantier?.typeConstruction || 'Maison',
     stationnement: editingChantier?.stationnement || {
       type: 'Devant',
@@ -41,6 +42,10 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
 
     if (!formData.reference.trim()) {
       newErrors.reference = 'La référence chantier est obligatoire';
+    }
+
+    if (!formData.adresse.trim()) {
+      newErrors.adresse = 'L\'adresse est obligatoire';
     }
 
     setErrors(newErrors);
@@ -80,14 +85,14 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+    <div className="max-w-4xl p-6 mx-auto">
+      <div className="overflow-hidden bg-white shadow-lg rounded-xl">
+        <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
                 onClick={onBack}
-                className="text-white hover:text-blue-200 transition-colors"
+                className="text-white transition-colors hover:text-blue-200"
               >
                 <ChevronLeft size={24} />
               </button>
@@ -101,13 +106,13 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
         <form onSubmit={handleSubmit} className="p-6 space-y-8">
           {/* Informations générales */}
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+            <h2 className="pb-2 text-lg font-semibold text-gray-800 border-b border-gray-200">
               Informations générales
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   Référence chantier *
                 </label>
                 <input
@@ -120,7 +125,7 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
                   placeholder="Ex: CHANT-2024-001"
                 />
                 {errors.reference && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
+                  <p className="flex items-center mt-1 text-sm text-red-600">
                     <AlertCircle size={16} className="mr-1" />
                     {errors.reference}
                   </p>
@@ -128,7 +133,7 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   Type de construction
                 </label>
                 <select
@@ -141,15 +146,36 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
                 </select>
               </div>
             </div>
+
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                Adresse *
+              </label>
+              <input
+                type="text"
+                value={formData.adresse}
+                onChange={(e) => setFormData(prev => ({ ...prev, adresse: e.target.value }))}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.adresse ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Ex: 123 Rue de la République, 75001 Paris"
+              />
+              {errors.adresse && (
+                <p className="flex items-center mt-1 text-sm text-red-600">
+                  <AlertCircle size={16} className="mr-1" />
+                  {errors.adresse}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Stationnement */}
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+            <h2 className="pb-2 text-lg font-semibold text-gray-800 border-b border-gray-200">
               Stationnement
             </h2>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
               {['Devant', 'Allée', 'Cour', 'Difficile', 'Autre'].map((option) => (
                 <label key={option} className="flex items-center space-x-2 cursor-pointer">
                   <input
@@ -169,7 +195,7 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block mb-2 text-sm font-medium text-gray-700">
                 Informations complémentaires
               </label>
               <textarea
@@ -187,13 +213,13 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
 
           {/* Accès chantier */}
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+            <h2 className="pb-2 text-lg font-semibold text-gray-800 border-b border-gray-200">
               Accès chantier
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   Niveau
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -217,7 +243,7 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block mb-2 text-sm font-medium text-gray-700">
                   Type d'accès
                 </label>
                 <div className="space-y-2">
@@ -242,7 +268,7 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block mb-2 text-sm font-medium text-gray-700">
                 Informations complémentaires
               </label>
               <textarea
@@ -260,11 +286,11 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
 
           {/* Matériel spécifique */}
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+            <h2 className="pb-2 text-lg font-semibold text-gray-800 border-b border-gray-200">
               Matériel spécifique
             </h2>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {['Echelle', 'Maçonnerie', 'Enduit', 'Autres'].map((materiel) => (
                 <label key={materiel} className="flex items-center space-x-2 cursor-pointer">
                   <input
@@ -279,7 +305,7 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block mb-2 text-sm font-medium text-gray-700">
                 Informations complémentaires
               </label>
               <textarea
@@ -297,11 +323,11 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
 
           {/* Type de pose */}
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+            <h2 className="pb-2 text-lg font-semibold text-gray-800 border-b border-gray-200">
               Type de pose
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {['Neuf', 'Rénovation sur ancien châssis', 'Dépose totale', 'Applique', 'Ebrasement', 'Tunnel'].map((type) => (
                 <label key={type} className="flex items-center space-x-2 cursor-pointer">
                   <input
@@ -320,11 +346,11 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
 
           {/* Electricité */}
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+            <h2 className="pb-2 text-lg font-semibold text-gray-800 border-b border-gray-200">
               Electricité
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {['Client', 'Expert fenêtre'].map((option) => (
                 <label key={option} className="flex items-center space-x-2 cursor-pointer">
                   <input
@@ -343,7 +369,7 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
 
           {/* Informations spécifiques */}
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+            <h2 className="pb-2 text-lg font-semibold text-gray-800 border-b border-gray-200">
               Informations ou spécificités du chantier
             </h2>
             
@@ -359,18 +385,18 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+          <div className="flex justify-end pt-6 space-x-4 border-t border-gray-200">
             <button
               type="button"
               onClick={onBack}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 text-gray-700 transition-colors border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+              className="flex items-center px-6 py-2 space-x-2 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={18} />
               <span>{isSubmitting ? 'Sauvegarde...' : 'Sauvegarder'}</span>
