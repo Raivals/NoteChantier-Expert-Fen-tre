@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { client, CHANTIERS_QUERY } from '../lib/sanity';
+import { client, CHANTIERS_QUERY, testConnection } from '../lib/sanity';
 import { ChantierFormData } from '../types';
 
 // Fonction pour convertir les données Sanity vers le format de l'application
@@ -54,8 +54,12 @@ export const useSanityChantiers = () => {
   const fetchChantiers = async () => {
     try {
       console.log('🔄 Chargement des chantiers depuis Sanity...');
-      console.log('Project ID:', import.meta.env.VITE_SANITY_PROJECT_ID);
-      console.log('Dataset:', import.meta.env.VITE_SANITY_DATASET);
+      
+      // Test de connexion d'abord
+      const connectionOk = await testConnection();
+      if (!connectionOk) {
+        throw new Error('Impossible de se connecter à Sanity. Vérifiez votre configuration.');
+      }
       
       setLoading(true);
       setError(null);
@@ -65,7 +69,7 @@ export const useSanityChantiers = () => {
       setChantiers(convertedData);
     } catch (err) {
       console.error('❌ Erreur lors du chargement des chantiers:', err);
-      setError('Erreur lors du chargement des données');
+      setError(`Erreur lors du chargement des données: ${err instanceof Error ? err.message : 'Erreur inconnue'}`);
     } finally {
       setLoading(false);
     }
@@ -80,6 +84,13 @@ export const useSanityChantiers = () => {
     try {
       console.log('💾 Sauvegarde du chantier:', chantier);
       setError(null);
+      
+      // Vérifier la connexion avant de sauvegarder
+      const connectionOk = await testConnection();
+      if (!connectionOk) {
+        throw new Error('Impossible de se connecter à Sanity pour la sauvegarde');
+      }
+      
       const sanityDoc = convertChantierToSanity(chantier);
       console.log('📄 Document Sanity à sauvegarder:', sanityDoc);
       
@@ -102,7 +113,7 @@ export const useSanityChantiers = () => {
       return result;
     } catch (err) {
       console.error('❌ Erreur lors de la sauvegarde:', err);
-      setError('Erreur lors de la sauvegarde');
+      setError(`Erreur lors de la sauvegarde: ${err instanceof Error ? err.message : 'Erreur inconnue'}`);
       throw err;
     }
   };
@@ -110,14 +121,23 @@ export const useSanityChantiers = () => {
   // Supprimer un chantier
   const deleteChantier = async (id: string) => {
     try {
+      console.log('🗑️ Suppression du chantier:', id);
       setError(null);
+      
+      // Vérifier la connexion
+      const connectionOk = await testConnection();
+      if (!connectionOk) {
+        throw new Error('Impossible de se connecter à Sanity pour la suppression');
+      }
+      
       await client.delete(id);
+      console.log('✅ Chantier supprimé avec succès');
       
       // Recharger les données
       await fetchChantiers();
     } catch (err) {
       console.error('Erreur lors de la suppression:', err);
-      setError('Erreur lors de la suppression');
+      setError(`Erreur lors de la suppression: ${err instanceof Error ? err.message : 'Erreur inconnue'}`);
       throw err;
     }
   };
