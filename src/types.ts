@@ -1,6 +1,7 @@
 export interface ChantierFormData {
   id: string;
   reference: string;
+  adresse: string;
   typeConstruction: 'Maison' | 'Bâtiment';
   stationnement: {
     type: 'Devant' | 'Allée' | 'Cour' | 'Difficile' | 'Autre';
