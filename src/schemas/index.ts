@@ -1,3 +1,3 @@
-import { chantierSchema } from './chantier'
+import { chantierType } from './chantierType'
 
-export const schemaTypes = [chantierSchema]
+export const schemaTypes = [chantierType]
