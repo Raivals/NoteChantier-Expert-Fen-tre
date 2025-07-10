@@ -6,11 +6,17 @@ interface ChantierFormProps {
   onBack: () => void;
   onSave: (chantier: ChantierFormData) => void;
   editingChantier?: ChantierFormData;
+  loading?: boolean;
 }
 
-const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChantier }) => {
+const ChantierForm: React.FC<ChantierFormProps> = ({ 
+  onBack, 
+  onSave, 
+  editingChantier,
+  loading = false 
+}) => {
   const [formData, setFormData] = useState<ChantierFormData>({
-    id: editingChantier?.id || crypto.randomUUID(),
+    id: editingChantier?.id || 'new',
     reference: editingChantier?.reference || '',
     adresse: editingChantier?.adresse || '',
     typeConstruction: editingChantier?.typeConstruction || 'Maison',
@@ -62,9 +68,7 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
     setIsSubmitting(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulation d'une sauvegarde
-      onSave(formData);
-      onBack();
+      await onSave(formData);
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
     } finally {
@@ -395,11 +399,11 @@ const ChantierForm: React.FC<ChantierFormProps> = ({ onBack, onSave, editingChan
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || loading}
               className="flex items-center px-6 py-2 space-x-2 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save size={18} />
-              <span>{isSubmitting ? 'Sauvegarde...' : 'Sauvegarder'}</span>
+              <span>{isSubmitting || loading ? 'Sauvegarde...' : 'Sauvegarder'}</span>
             </button>
           </div>
         </form>
