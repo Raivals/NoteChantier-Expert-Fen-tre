@@ -1,14 +1,14 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
-import { chantierSchema } from './src/schemas/chantier'
+import { chantierType } from './src/schemas/chantierType'
 
 export default defineConfig({
   name: 'gestion-chantiers',
   title: 'Gestion des Chantiers',
 
-  projectId: process.env.VITE_SANITY_PROJECT_ID || 'your-project-id',
-  dataset: process.env.VITE_SANITY_DATASET || 'production',
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'your-project-id',
+  dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
 
   plugins: [
     structureTool(),
@@ -16,6 +16,6 @@ export default defineConfig({
   ],
 
   schema: {
-    types: [chantierSchema],
+    types: [chantierType],
   },
 })

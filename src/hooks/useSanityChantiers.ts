@@ -53,13 +53,18 @@ export const useSanityChantiers = () => {
   // Charger les chantiers depuis Sanity
   const fetchChantiers = async () => {
     try {
+      console.log('🔄 Chargement des chantiers depuis Sanity...');
+      console.log('Project ID:', import.meta.env.VITE_SANITY_PROJECT_ID);
+      console.log('Dataset:', import.meta.env.VITE_SANITY_DATASET);
+      
       setLoading(true);
       setError(null);
       const data = await client.fetch(CHANTIERS_QUERY);
+      console.log('✅ Données reçues de Sanity:', data);
       const convertedData = data.map(convertSanityToChantier);
       setChantiers(convertedData);
     } catch (err) {
-      console.error('Erreur lors du chargement des chantiers:', err);
+      console.error('❌ Erreur lors du chargement des chantiers:', err);
       setError('Erreur lors du chargement des données');
     } finally {
       setLoading(false);
@@ -73,24 +78,30 @@ export const useSanityChantiers = () => {
   // Sauvegarder un chantier
   const saveChantier = async (chantier: ChantierFormData) => {
     try {
+      console.log('💾 Sauvegarde du chantier:', chantier);
       setError(null);
       const sanityDoc = convertChantierToSanity(chantier);
+      console.log('📄 Document Sanity à sauvegarder:', sanityDoc);
       
       let result;
       if (chantier.id && chantier.id !== 'new') {
         // Mise à jour
+        console.log('🔄 Mise à jour du chantier existant');
         result = await client.createOrReplace(sanityDoc);
       } else {
         // Création
+        console.log('➕ Création d\'un nouveau chantier');
         result = await client.create(sanityDoc);
       }
 
+      console.log('✅ Chantier sauvegardé:', result);
+      
       // Recharger les données
       await fetchChantiers();
       
       return result;
     } catch (err) {
-      console.error('Erreur lors de la sauvegarde:', err);
+      console.error('❌ Erreur lors de la sauvegarde:', err);
       setError('Erreur lors de la sauvegarde');
       throw err;
     }
