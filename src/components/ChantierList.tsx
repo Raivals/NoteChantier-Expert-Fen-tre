@@ -17,7 +17,6 @@ const ChantierList: React.FC<ChantierListProps> = ({
   onEdit,
   onView,
   onDelete
-  loading = false
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'Maison' | 'Bâtiment'>('all');
