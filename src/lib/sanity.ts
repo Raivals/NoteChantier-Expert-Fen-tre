@@ -3,9 +3,9 @@ import { createClient } from '@sanity/client';
 export const client = createClient({
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
   dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
-  useCdn: false, // Désactivé pour les écritures en temps réel
+  useCdn: false, // Désactivé pour les écritures avec token
   apiVersion: '2024-01-01',
-  // Token optionnel pour les écritures (si nécessaire)
+  // Token API pour les opérations d'écriture
   token: import.meta.env.VITE_SANITY_TOKEN,
 });
 
@@ -15,6 +15,7 @@ export const testConnection = async () => {
     console.log('🔗 Test de connexion Sanity...');
     console.log('Project ID:', import.meta.env.VITE_SANITY_PROJECT_ID);
     console.log('Dataset:', import.meta.env.VITE_SANITY_DATASET);
+    console.log('Token configuré:', import.meta.env.VITE_SANITY_TOKEN ? '✅ Oui' : '❌ Non');
     
     const result = await client.fetch('*[_type == "chantier"][0..2]');
     console.log('✅ Connexion Sanity réussie:', result);
