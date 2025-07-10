@@ -2,7 +2,11 @@ import { createClient } from '@sanity/client';
 
 export const client = createClient({
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+<<<<<<< HEAD
   dataset: import.meta.env.VITE_SANITY_DATASET ,
+=======
+  dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
+>>>>>>> 287e7c2f4945f05a7d57a7ef1c50ed22732bc0ea
   useCdn: false, // Désactivé pour les écritures avec token
   apiVersion: '2024-01-01',
   // Token API pour les opérations d'écriture

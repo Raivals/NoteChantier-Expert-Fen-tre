@@ -8,6 +8,7 @@ interface ChantierListProps {
   onEdit: (chantier: ChantierFormData) => void;
   onView: (chantier: ChantierFormData) => void;
   onDelete: (id: string) => void;
+  loading?: boolean;
 }
 
 const ChantierList: React.FC<ChantierListProps> = ({
@@ -16,6 +17,7 @@ const ChantierList: React.FC<ChantierListProps> = ({
   onEdit,
   onView,
   onDelete
+  loading = false
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'Maison' | 'Bâtiment'>('all');
