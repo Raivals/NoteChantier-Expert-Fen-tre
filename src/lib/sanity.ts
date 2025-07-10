@@ -1,11 +1,11 @@
 import { createClient } from '@sanity/client';
 
 export const client = createClient({
-  projectId: process.env.VITE_SANITY_PROJECT_ID || 'your-project-id',
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'your-project-id',
   dataset: process.env.VITE_SANITY_DATASET || 'production',
   useCdn: true,
   apiVersion: '2024-01-01',
-  token: process.env.VITE_SANITY_TOKEN, // Optionnel pour les lectures publiques
+  token: import.meta.env.VITE_SANITY_TOKEN, // Optionnel pour les lectures publiques
 });
 
 // Queries GROQ pour récupérer les données
